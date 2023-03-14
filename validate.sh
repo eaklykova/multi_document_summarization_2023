@@ -1,0 +1,1 @@
+PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python python eval.py --data_path ./data/train_test/train.json --is_processed_data

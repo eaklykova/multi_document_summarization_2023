@@ -1,0 +1,6 @@
+.ipynb_checkpoints/
+.vscode/
+eval_logs/
+#!/data
+data/
+#!/data/train_test
