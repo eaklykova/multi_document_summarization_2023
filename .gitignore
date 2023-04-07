@@ -4,3 +4,7 @@ eval_logs/
 #!/data
 data/
 #!/data/train_test
+ckpt/
+wandb/
+.lock
+gpt_4_*/
