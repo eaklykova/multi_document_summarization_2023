@@ -12,6 +12,8 @@ import datasets
 from rouge import Rouge
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
+from src.text_rank import TextRank
+
 
 def WHITESPACE_HANDLER(k):
     return re.sub("\s+", " ", re.sub("\n+", " ", k.strip()))
@@ -44,7 +46,7 @@ def flat_dataset(dataset):
     return new_dataset
 
 
-def validate(model, tokenizer, dataset, device, is_hierarchical=False, chapter_summary_name='chapter_summary'):
+def validate(model, tokenizer, dataset, device, eval_type, chapter_summary_name='chapter_summary'):
     refs = []
     hyps = []
     raw_text = []
@@ -56,10 +58,16 @@ def validate(model, tokenizer, dataset, device, is_hierarchical=False, chapter_s
         except Exception:
             print(sample)
             exit(0)
-        if is_hierarchical:
+        if eval_type == 'hierarchical':
             hyps.append(hierarchical_summarization(model, tokenizer, device, text=sample["chapters_text"]))
-        else:
+        elif eval_type == 'baseline':
             hyps.append(generate_summ(model, tokenizer, device, text=sample["chapters_text"]))
+        elif eval_type == 'text_rank':
+            hyps.append(text_rank_summarization(model, text=sample["chapters_text"]))
+        elif eval_type == 'complex_1':
+            hyps.append(text_rank_seq_2_seq_summarization(model, tokenizer, device, text=sample["chapters_text"]))
+        else:
+            raise NotImplementedError(f'eval_type "{eval_type}" not implemented')
     scores = rouge.get_scores(hyps, refs, avg=True)
     return scores, hyps, refs, raw_text
 
@@ -80,6 +88,19 @@ def hierarchical_summarization(model, tokenizer, device, text):
     return ' '.join(summ)
 
 
+def text_rank_summarization(model, text):
+    summary_raw = model(text, ratio=0.16)
+    summary = ' '.join([t['sentence'] for t in summary_raw])
+    return summary
+
+
+def text_rank_seq_2_seq_summarization(model, tokenizer, device, text):
+    seq2seq_model, text_rank = model
+    text_rank_summary = text_rank_summarization(text_rank, text)
+    res = hierarchical_summarization(seq2seq_model, tokenizer, device, text_rank_summary)
+    return res
+
+
 def write_scores(path, data):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
@@ -94,9 +115,9 @@ if __name__ == "__main__":
     parser.add_argument("--device", default="cpu", type=str)
     parser.add_argument("--is_processed_data", action="store_true", dest="is_processed_data")
     parser.add_argument("--is_hf_dataset", action="store_true", dest="is_hf_dataset")
-    parser.add_argument("--is_hierarchical", action='store_true', dest="is_hierarchical")
+    parser.add_argument("--eval_type", choices=['baseline', 'hierarchical', 'text_rank', 'complex_1'], default='baseline')
     parser.add_argument("--chapter_summary_name", type=str, default='chapter_summary')
-    parser.set_defaults(is_processed_data=False, is_hf_dataset=False, is_hierarchical=False)
+    parser.set_defaults(is_processed_data=False, is_hf_dataset=False)
 
     args = parser.parse_args()
 
@@ -124,10 +145,18 @@ if __name__ == "__main__":
     model_name = args.model_name
 
     print(f"Validate {model_name}")
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
-    model.to(device)
+    if model_name == 'text_rank':
+        tokenizer = None
+        model = TextRank()
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+
+        model.to(device)
+    
+    if args.eval_type == 'complex_1':
+        model = (model, TextRank())
 
     if not os.path.exists(args.val_results_path):
         os.mkdir(args.val_results_path)
@@ -137,7 +166,7 @@ if __name__ == "__main__":
         tokenizer,
         dataset,
         device,
-        is_hierarchical=args.is_hierarchical,
+        eval_type=args.eval_type,
         chapter_summary_name=args.chapter_summary_name
     )
     write_scores(

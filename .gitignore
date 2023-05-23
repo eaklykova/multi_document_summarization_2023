@@ -8,3 +8,4 @@ ckpt/
 wandb/
 .lock
 gpt_4_*/
+__pycache__/
