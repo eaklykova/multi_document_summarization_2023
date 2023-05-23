@@ -21,7 +21,7 @@ def WHITESPACE_HANDLER(k):
 
 def generate_summ(model, tokenizer, device, text):
     input_ids = tokenizer(
-        [WHITESPACE_HANDLER(text)],
+        [WHITESPACE_HANDLER("Summarize: " + text)],
         return_tensors="pt",
         padding="max_length",
         truncation=True,
