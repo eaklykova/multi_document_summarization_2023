@@ -46,7 +46,7 @@ def flat_dataset(dataset):
     return new_dataset
 
 
-def validate(model, tokenizer, dataset, device, eval_type, chapter_summary_name='chapter_summary'):
+def validate(model, tokenizer, dataset, device, eval_type, chapter_summary_name='chapter_summary', **kwargs):
     refs = []
     hyps = []
     raw_text = []
@@ -59,7 +59,7 @@ def validate(model, tokenizer, dataset, device, eval_type, chapter_summary_name=
             print(sample)
             exit(0)
         if eval_type == 'hierarchical':
-            hyps.append(hierarchical_summarization(model, tokenizer, device, text=sample["chapters_text"]))
+            hyps.append(hierarchical_summarization(model, tokenizer, device, text=sample["chapters_text"]), **kwargs)
         elif eval_type == 'baseline':
             hyps.append(generate_summ(model, tokenizer, device, text=sample["chapters_text"]))
         elif eval_type == 'text_rank':
@@ -72,12 +72,12 @@ def validate(model, tokenizer, dataset, device, eval_type, chapter_summary_name=
     return scores, hyps, refs, raw_text
 
 
-def hierarchical_summarization(model, tokenizer, device, text):
+def hierarchical_summarization(model, tokenizer, device, text, summarization_sentences_len=5):
     sentences = nltk.sent_tokenize(text, language="russian")
     summ = sentences[:]
     merge_cnt = 10
     is_summarized = False
-    while not(len(summ) <= 4 and is_summarized):
+    while not(len(summ) <= summarization_sentences_len and is_summarized):
         new_summ = []
         for ind in range(0, len(summ), merge_cnt):
             pairs = summ[ind:ind + merge_cnt]
@@ -113,6 +113,7 @@ if __name__ == "__main__":
     parser.add_argument("--val_results_path", type=Path, default=Path("./eval_logs/"))
     parser.add_argument("--validate_size", default=-1, type=int)
     parser.add_argument("--device", default="cpu", type=str)
+    parser.add_argument("--summarization_sentences_len", default=5, type=int)
     parser.add_argument("--is_processed_data", action="store_true", dest="is_processed_data")
     parser.add_argument("--is_hf_dataset", action="store_true", dest="is_hf_dataset")
     parser.add_argument("--eval_type", choices=['baseline', 'hierarchical', 'text_rank', 'complex_1'], default='baseline')
@@ -160,6 +161,11 @@ if __name__ == "__main__":
 
     if not os.path.exists(args.val_results_path):
         os.mkdir(args.val_results_path)
+    
+    additional_args = {}
+    if args.eval_type in ['complex_1', 'hierarchical']:
+        additional_args['summarization_sentences_len'] = args.summarization_sentences_len
+
 
     scores, hyps, refs, raw_text = validate(
         model,
@@ -167,7 +173,8 @@ if __name__ == "__main__":
         dataset,
         device,
         eval_type=args.eval_type,
-        chapter_summary_name=args.chapter_summary_name
+        chapter_summary_name=args.chapter_summary_name,
+        **additional_args
     )
     write_scores(
         args.val_results_path / f"{model_name.replace('/', '_')}_samples_{len(dataset)}_{uuid.uuid4()}.json", scores
