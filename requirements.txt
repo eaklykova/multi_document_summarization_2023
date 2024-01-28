@@ -1,0 +1,14 @@
+evaluate
+rouge_score
+bert_score
+rouge
+moverscore
+pyemd
+pytorch_pretrained_bert
+python -m spacy download ru_core_news_lg
+yake
+nlp-rake
+summa
+pymorphy2
+razdel
+fuzzywuzzy
