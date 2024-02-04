@@ -10,7 +10,7 @@ Comparison of TextRank, Hierarchical and pre-trained multilingual mBART and mT5 
 ## Gold Standard
 To assess the summarization quality, another dataset was compiled. Various summaries of 7 chapters in different books were collected and evaluated by experts on a scale from 1 to 5 (1 = very bad, 5 = excellent). The chapters were all different in word count to reduce possible length bias of the metrics. 102 summaries (\~15 per chapter) were collected.
 
-The dataset file **gold_standard.xlsx** contains the following fields: book_id, book_title, chapter_id, chapter_title, chapter_summary, summary_source, length_score (length of summary / length of chapter), human_score, is_best, comments, length_summary (words).
+The dataset file *gold_standard.xlsx* contains the following fields: book_id, book_title, chapter_id, chapter_title, chapter_summary, summary_source, length_score (length of summary / length of chapter), human_score, is_best, comments, length_summary (words).
 
 ## Summary Evaluation: Algorithm
 We propose a summarization evaluation metric based on several existing algorithms. Our metric is composed of the following steps:
@@ -25,6 +25,7 @@ We propose a summarization evaluation metric based on several existing algorithm
 * Ne_rate – the percentage of NE found in the summary relative to the chapter
 * Rouge-L – ROUGE-L for the longest sequence
 * Len_rate – length of summary / length of chapter
+For more info, see *final_presentation.pdf* in this repository.
 
 ## Summary Evaluation: Results
 Spearman correlation coefficient between expert judgements and:
