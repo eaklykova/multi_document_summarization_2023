@@ -3,6 +3,8 @@
 ## Data
 Summaries of 944 chapters in 67 Russian classical books.  
 [Dataset at huggingface.co](https://huggingface.co/datasets/c00k1ez/summarization)
+## Experiments
+Comparison of TextRank, Hierarchical and pre-trained multilingual mBART and mT5 algorithms based on the dataset.
 ## Summary Evaluation
 
 ## Gold Standard
