@@ -25,7 +25,7 @@ We propose a summarization evaluation metric based on several existing algorithm
 * Ne_rate – the percentage of NE found in the summary relative to the chapter
 * Rouge-L – ROUGE-L for the longest sequence
 * Len_rate – length of summary / length of chapter
-For more info, see *final_presentation.pdf* in this repository.
+For more info, see *final_presentation.pdf* in this repository. To use the metric, refer to *likeScore.py*. Additional code & experiments can be found [here](https://drive.google.com/file/d/17KUduCVerystWpyty8sA6jI74bNG1wkn/view?usp=sharing).
 
 ## Summary Evaluation: Results
 Spearman correlation coefficient between expert judgements and:
