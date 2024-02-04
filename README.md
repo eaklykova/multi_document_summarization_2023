@@ -12,13 +12,22 @@ We propose a summarization evaluation metric based on several existing algorithm
 3. Named Entity extraction (the intersection of NEs in the chapter and the summary is considered)
 4. Calculation of ROUGE-L
 5. Adjustment for chapther length
-## Summary Evaluation: Results
 ![Metric formula](eval_formula.png)
-Bert_TextRank – BERTScore on graph keywords
-Bert_Rake – BERTScore on accented keywords
-Ne_rate – the percentage of named entities found
-Rouge-L – ROUGE-L for the longest sequence
-Len_rate – relative length in words
+* Bert_TextRank – BERTScore on graph keywords
+* Bert_Rake – BERTScore on accented keywords
+* Ne_rate – the percentage of NE found in the summary relative to the chapter
+* Rouge-L – ROUGE-L for the longest sequence
+* Len_rate – length of summary / length of chapter
+## Summary Evaluation: Results
+Spearman correlation coefficient between expert judgements and:
+* Summary length: 0.32
+* Length of summary / length of chapter: 0.54
+* Number of NEs in summary: 0.28
+* Number of NEs in summary / number of NEs in chapter: 0.57
+* METEOR: 0.56
+* ROUGE-L: 0.59
+* BERTScore: 0.51
+* **Our metric: 0.64**
 ## Gold Standard
 Various summaries of 7 chapters in different books were collected and evaluated by experts on a scale from 1 to 5 (1 = very bad, 5 = excellent). The chapters were all different in word count to reduce possible length bias of the metrics. 102 summaries (\~15 per chapter) were collected.
 
