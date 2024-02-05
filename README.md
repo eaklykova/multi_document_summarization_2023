@@ -14,7 +14,7 @@ The dataset file **gold_standard.xlsx** contains the following fields: book_id, 
 
 ## Summary Evaluation: Idea
 * Rely on keywords and named entities, since they (intuitively) represent important features of the plot
-* Take into account existing SOTA metrics, balancing metrics that favor extractive vs. abstractive summarization
+* Take into account existing SOTA metrics, balancing those that favor extractive vs. abstractive summarization
 * Correct for relative summary length
 
 ## Summary Evaluation: Algorithm
