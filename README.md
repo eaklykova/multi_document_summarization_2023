@@ -12,13 +12,18 @@ To assess the summarization quality, another dataset was compiled. Various summa
 
 The dataset file **gold_standard.xlsx** contains the following fields: book_id, book_title, chapter_id, chapter_title, chapter_summary, summary_source, length_score (length of summary / length of chapter), human_score, is_best, comments, length_summary (words).
 
+## Summary Evaluation: Idea
+* Rely on keywords and named entities, since they (intuitively) represent important features of the plot
+* Take into account existing SOTA metrics, balancing metrics that favor extractive vs. abstractive summarization
+* Correct for relative summary length
+
 ## Summary Evaluation: Algorithm
 We propose a summarization evaluation metric based on several existing algorithms. Our metric is composed of the following steps:
 1. Keyword extraction
 2. Calculation of BERTScore between keywords from the chapter and those from the summary
 3. Named Entity extraction (the intersection of NEs in the chapter and the summary is considered)
 4. Calculation of ROUGE-L
-5. Adjustment for chapther length
+5. Adjustment for summary length
 ![Metric formula](eval_formula.png)
 * Bert_TextRank – BERTScore on graph keywords
 * Bert_Rake – BERTScore on accented keywords
