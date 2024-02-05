@@ -5,7 +5,7 @@
 Summaries of 944 chapters in 67 Russian classical books. [Dataset at huggingface.co](https://huggingface.co/datasets/c00k1ez/summarization)
 
 ## Experiments
-Comparison of TextRank, Hierarchical and pre-trained multilingual mBART and mT5 algorithms. [Paper](https://docs.google.com/document/d/1uNt9VVl783cNKCtyDDY0Y1H_xGJaIfg2OidXKA4PvtE/edit)
+Comparison of TextRank, Hierarchical and pre-trained multilingual mBART and mT5 algorithms. [For more details see our paper](https://docs.google.com/document/d/1uNt9VVl783cNKCtyDDY0Y1H_xGJaIfg2OidXKA4PvtE/edit)
 
 ## Gold Standard
 To assess the summarization quality, another dataset was compiled. Various summaries of 7 chapters in different books were collected and evaluated by experts on a scale from 1 to 5 (1 = very bad, 5 = excellent). The chapters were all different in word count to reduce possible length bias of the metrics. 102 summaries (\~15 per chapter) were collected.
